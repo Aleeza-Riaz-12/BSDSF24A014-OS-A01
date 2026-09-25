@@ -1,0 +1,3 @@
+Operating Systems
+C programming is useful.
+Git and Linux are important.
