@@ -61,3 +61,16 @@ LD_LIBRARY_PATH is an environment variable used by the dynamic loader to specify
 It was necessary because `libmyutils.so` was stored in the project's `lib` directory, which was not automatically searched by the loader.
 
 This shows that the dynamic loader is responsible for locating and loading required shared libraries when the program starts.
+## Feature 5: Man Pages and Installation
+
+### 1. Man Pages
+
+Man pages provide standard Linux documentation for programs and functions. They allow users to learn how a program or function works directly from the terminal.
+
+The man pages created in this project contain the NAME, SYNOPSIS, DESCRIPTION and AUTHOR sections.
+
+### 2. Installation
+
+The Makefile contains an install target that copies the executable into `/usr/local/bin` and the manual pages into the system's manual page directory.
+
+This allows the program to be executed using the `client` command and allows the documentation to be viewed using the `man` command.
