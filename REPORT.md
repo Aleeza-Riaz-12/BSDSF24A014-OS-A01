@@ -38,3 +38,26 @@ The `ar` command creates and manages archive files. In this project it combines 
 ### 3. Static Linking Symbols
 
 When `nm` is used on `client_static`, symbols such as `mystrlen` can be found in the executable. This shows that the static library code has been linked into the executable.
+## Feature 4: Dynamic Library
+
+### 1. Position-Independent Code
+
+Position-Independent Code, enabled using `-fPIC`, is code that can execute correctly regardless of the memory address where it is loaded.
+
+It is important for shared libraries because a shared library may be loaded at different memory addresses by different programs.
+
+### 2. Static vs Dynamic Client Size
+
+The static executable generally has a larger size because the required library code is included inside the executable.
+
+The dynamic executable can be smaller because the library code remains in the shared library and is loaded when the program runs.
+
+The exact sizes depend on the compiler and system, so the sizes observed using `ls -lh bin/` should be recorded in the report.
+
+### 3. LD_LIBRARY_PATH
+
+LD_LIBRARY_PATH is an environment variable used by the dynamic loader to specify additional directories where shared libraries can be searched for.
+
+It was necessary because `libmyutils.so` was stored in the project's `lib` directory, which was not automatically searched by the loader.
+
+This shows that the dynamic loader is responsible for locating and loading required shared libraries when the program starts.
