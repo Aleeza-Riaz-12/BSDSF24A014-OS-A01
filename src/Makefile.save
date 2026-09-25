@@ -1,0 +1,29 @@
+ARFLAGS = rcs
+
+OBJDIR = ../obj
+LIBDIR = ../lib
+BINDIR = ../bin
+
+LIBRARY = $(LIBDIR)/libmyutils.a
+TARGET = $(BINDIR)/client_static
+
+UTILITY_SOURCES = mystrfunctions.c myfilefunctions.c
+UTILITY_OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(UTILITY_SOURCES))MAIN_OBJECT = $(OBJDIR)/main.o
+
+.PHONY: all clean
+
+all: $(TARGET)
+
+$(LIBRARY): $(UTILITY_OBJECTS) | $(LIBDIR)
+	$(AR) $(ARFLAGS) $@ $^
+	ranlib $@
+
+$(TARGET): $(MAIN_OBJECT) $(LIBRARY) | $(BINDIR)
+	$(CC) $(MAIN_OBJECT) $(LIBRARY) -o $@
+
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
