@@ -21,3 +21,20 @@ A simple tag only points to a commit. An annotated tag stores additional informa
 ### 3. GitHub Release
 
 A GitHub Release provides a formal downloadable version of a project. Attaching binaries allows users to download and run the compiled program without compiling the source code themselves.
+## Feature 3: Static Library
+
+### 1. Makefile Comparison
+
+In the multifile version, the source files were compiled directly to create the executable.
+
+In the static library version, the utility source files are first compiled into object files. The `ar` command is then used to combine the object files into the static library.
+
+### 2. Purpose of ar
+
+The `ar` command creates and manages archive files. In this project it combines object files into the static library.
+
+`ranlib` creates or updates the archive symbol index. Modern versions of `ar` with the `s` option can create the symbol index automatically.
+
+### 3. Static Linking Symbols
+
+When `nm` is used on `client_static`, symbols such as `mystrlen` can be found in the executable. This shows that the static library code has been linked into the executable.
