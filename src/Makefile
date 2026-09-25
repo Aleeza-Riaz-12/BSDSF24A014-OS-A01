@@ -1,15 +1,12 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -I../include
-
-AR = ar
-ARFLAGS = rcs
+CFLAGS = -Wall -Wextra -I../include -fPIC
 
 OBJDIR = ../obj
 LIBDIR = ../lib
 BINDIR = ../bin
 
-LIBRARY = $(LIBDIR)/libmyutils.a
-TARGET = $(BINDIR)/client_static
+LIBRARY = $(LIBDIR)/libmyutils.so
+TARGET = $(BINDIR)/client_dynamic
 
 UTILITY_SOURCES = mystrfunctions.c myfilefunctions.c
 UTILITY_OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(UTILITY_SOURCES))
@@ -21,11 +18,10 @@ MAIN_OBJECT = $(OBJDIR)/main.o
 all: $(TARGET)
 
 $(LIBRARY): $(UTILITY_OBJECTS) | $(LIBDIR)
-	$(AR) $(ARFLAGS) $@ $^
-	ranlib $@
+	$(CC) -shared -o $@ $^
 
 $(TARGET): $(MAIN_OBJECT) $(LIBRARY) | $(BINDIR)
-	$(CC) $(MAIN_OBJECT) $(LIBRARY) -o $@
+	$(CC) $(MAIN_OBJECT) -L$(LIBDIR) -lmyutils -Wl,-rpath,'$$ORIGIN/../lib' -o $@
 
 $(OBJDIR)/%.o: %.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -42,31 +38,4 @@ $(BINDIR):
 clean:
 	rm -f $(OBJDIR)/*.o
 	rm -f $(LIBRARY)
-	rm -f $(TARGET)CC = gcc
-CFLAGS = -Wall -Wextra -I../include
-
-OBJDIR = ../obj
-BINDIR = ../bin
-TARGET = $(BINDIR)/client
-
-SOURCES = main.c mystrfunctions.c myfilefunctions.c
-OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(SOURCES))
-
-.PHONY: all clean
-
-all: $(TARGET)
-
-$(TARGET): $(OBJECTS) | $(BINDIR)
-	$(CC) $(OBJECTS) -o $(TARGET)
-
-$(OBJDIR)/%.o: %.c | $(OBJDIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(OBJDIR):
-	mkdir -p $(OBJDIR)
-
-$(BINDIR):
-	mkdir -p $(BINDIR)
-
-clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(TARGET)
