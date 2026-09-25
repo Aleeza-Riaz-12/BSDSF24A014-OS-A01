@@ -1,37 +1,26 @@
-CC = gcc
+PREFIX ?= /usr/local
 
-CFLAGS = -Wall -Wextra -Iinclude -fPIC
+.PHONY: all static dynamic clean install
 
-SRC_DIR = src
-OBJ_DIR = obj
-LIB_DIR = lib
-BIN_DIR = bin
+all:
+	$(MAKE) -C src all
 
-STR_OBJ = $(OBJ_DIR)/mystrfunctions.o
-FILE_OBJ = $(OBJ_DIR)/myfilefunctions.o
+static:
+	$(MAKE) -C src static
 
-LIB = $(LIB_DIR)/libmyutils.so
-TARGET = $(BIN_DIR)/client_dynamic
-
-all: $(TARGET)
-
-$(OBJ_DIR)/mystrfunctions.o: $(SRC_DIR)/mystrfunctions.c
-	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(OBJ_DIR)/myfilefunctions.o: $(SRC_DIR)/myfilefunctions.c
-	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(LIB): $(STR_OBJ) $(FILE_OBJ)
-	mkdir -p $(LIB_DIR)
-	$(CC) -shared -o $(LIB) $(STR_OBJ) $(FILE_OBJ)
-
-$(TARGET): $(LIB) $(SRC_DIR)/main.c
-	mkdir -p $(BIN_DIR)
-	$(CC) -Wall -Wextra -Iinclude $(SRC_DIR)/main.c -L$(LIB_DIR) -lmyutils -o $(TARGET)
+dynamic:
+	$(MAKE) -C src dynamic
 
 clean:
-	rm -f $(OBJ_DIR)/*.o
-	rm -f $(LIB_DIR)/libmyutils.so
-	rm -f $(BIN_DIR)/client_dynamic
+	$(MAKE) -C src clean
+
+install: all
+	install -d $(PREFIX)/bin
+	install -d $(PREFIX)/lib
+	install -d $(PREFIX)/share/man/man1
+	install -d $(PREFIX)/share/man/man3
+	install -m 755 bin/client_dynamic $(PREFIX)/bin/client
+	install -m 755 lib/libmyutils.so $(PREFIX)/lib/libmyutils.so
+	install -m 644 man/man1/client.1 $(PREFIX)/share/man/man1/client.1
+	install -m 644 man/man3/*.3 $(PREFIX)/share/man/man3/
+	ldconfig
